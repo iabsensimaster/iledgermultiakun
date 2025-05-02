@@ -62,24 +62,17 @@
       const message = document.getElementById('message');
 
       // Payload yang dikirim ke Google Apps Script
-      const payload = {
-        sheet: 'Admin',
-        action: 'register',  // Pastikan action 'register'
-        values: [
-          email,
-          password,
-          perusahaan,
-          'false',  // Status aktif (false dulu)
-          new Date().toLocaleDateString('id-ID'),  // Tanggal daftar
-          ''  // Tanggal aktif (kosong untuk saat ini)
-        ]
-      };
+ const payload = {
+  action: 'register',
+  sheet: 'Admin',
+  values: [email, password, perusahaan, 'false', new Date().toLocaleDateString('id-ID']
+};
 
-      try {
-        const res = await fetch(API_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+fetch(SHEET_SUBMIT_URL, {
+  method: 'POST',
+  mode: 'no-cors',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload)
         });
 
         const data = await res.json();
