@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registrasi i-Ledger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #fff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .register-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #00796b;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Registrasi i-Ledger</h2>
+    <form id="register-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <input type="text" id="perusahaan" placeholder="Nama Perusahaan" required />
+      <button type="submit">Daftar</button>
+      <div class="message" id="message"></div>
+    </form>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const perusahaan = document.getElementById('perusahaan').value.trim();
+      const message = document.getElementById('message');
+
+      const payload = {
+        action: 'register',
+        sheet: 'Admin',
+        values: [
+          email,
+          password,
+          perusahaan,
+          'false', // status aktif
+          new Date().toLocaleDateString('id-ID'), // tanggal daftar
+          '' // tanggal aktif (belum aktif)
+        ]
+      };
+
+      fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        message.textContent = '✅ Registrasi berhasil, silakan menunggu verifikasi.';
+        message.style.color = 'green';
+        document.getElementById('register-form').reset();
+      })
+      .catch(err => {
+        console.error(err);
+        message.textContent = '❌ Terjadi kesalahan.';
+        message.style.color = 'red';
+      });
+    });
+  </script>
+</body>
+</html>
