@@ -66,19 +66,27 @@
   action: 'register',
   sheet: 'Admin',
   values: [email, password, perusahaan, 'false', new Date().toLocaleDateString('id-ID')]
-};
-
+      };
+   try {
 fetch(API_ENDPOINT, {
   method: 'POST',
   mode: 'no-cors',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(payload)
         });
-    .finally(() => {
-        alert('✅ Transaksi disimpan!');
-        document.getElementById('register-form').reset();
-      });
+
+        const data = await res.json();
+        if (data.status === 'success') {
+          message.style.color = 'green';
+          message.textContent = '✅ Registrasi berhasil, silakan menunggu verifikasi.';
+          document.getElementById('register-form').reset();
+        } else {
+          message.style.color = 'red';
+          message.textContent = '❌ ' + (data.message || 'Registrasi gagal');
+        }
+      } catch (err) {
+        console.error(err);
+        message.style.color = 'red';
+        message.textContent = '❌ Gagal menghubungi server.';
+      }
     });
-  </script>
-</body>
-</html>
