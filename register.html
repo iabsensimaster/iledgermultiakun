@@ -75,13 +75,8 @@ fetch(API_ENDPOINT, {
   body: JSON.stringify(payload)
         });
     .finally(() => {
-        loadingOverlay.classList.add('hidden');
         alert('✅ Transaksi disimpan!');
-        document.getElementById('ledgerForm').reset();
-        previewNota.classList.add('hidden');
-        previewBukti.classList.add('hidden');
-        posInput.value = '';
-        buktiContainer.classList.add('hidden');
+        document.getElementById('register-form').reset();
       });
     });
   </script>
