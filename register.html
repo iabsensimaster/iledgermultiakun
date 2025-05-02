@@ -14,46 +14,29 @@
       height: 100vh;
       margin: 0;
     }
-
     .register-container {
       background: #fff;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       width: 300px;
-      text-align: center;
     }
-
-    h2 {
-      color: #00796b;
-    }
-
-    input {
+    h2 { color: #00796b; text-align: center; }
+    input, button {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
+      font-size: 14px;
     }
-
     button {
-      width: 100%;
-      padding: 10px;
       background-color: #00796b;
       color: white;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
     }
-
-    button:hover {
-      background-color: #004d40;
-    }
-
-    .message {
-      margin-top: 10px;
-      font-size: 14px;
-    }
+    button:hover { background-color: #004d40; }
+    .message { margin-top: 8px; font-size: 13px; text-align: center; }
   </style>
 </head>
 <body>
@@ -70,50 +53,49 @@
 
   <script src="config.js"></script>
   <script>
-    document.getElementById('register-form').addEventListener('submit', function (e) {
+    document.getElementById('register-form').addEventListener('submit', async function (e) {
       e.preventDefault();
+      
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
       const perusahaan = document.getElementById('perusahaan').value.trim();
       const message = document.getElementById('message');
 
+      // Payload yang dikirim ke Google Apps Script
       const payload = {
         sheet: 'Admin',
-        action: 'register',
+        action: 'register',  // Pastikan action 'register'
         values: [
           email,
           password,
           perusahaan,
-          'false', // status aktif
-          new Date().toLocaleDateString('id-ID'), // tanggal daftar
-          '' // tanggal aktif (belum aktif)
+          'false',  // Status aktif (false dulu)
+          new Date().toLocaleDateString('id-ID'),  // Tanggal daftar
+          ''  // Tanggal aktif (kosong untuk saat ini)
         ]
       };
 
-      fetch(API_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data); // Debugging
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
         if (data.status === 'success') {
-          message.textContent = '✅ Registrasi berhasil, silakan menunggu verifikasi.';
           message.style.color = 'green';
+          message.textContent = '✅ Registrasi berhasil, silakan menunggu verifikasi.';
           document.getElementById('register-form').reset();
         } else {
-          message.textContent = '❌ ' + (data.message || 'Terjadi kesalahan');
           message.style.color = 'red';
+          message.textContent = '❌ ' + (data.message || 'Registrasi gagal');
         }
-      })
-      .catch(err => {
+      } catch (err) {
         console.error(err);
-        message.textContent = '❌ Gagal menghubungi server.';
         message.style.color = 'red';
-      });
+        message.textContent = '❌ Gagal menghubungi server.';
+      }
     });
   </script>
 </body>
