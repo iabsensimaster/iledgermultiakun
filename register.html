@@ -74,21 +74,15 @@ fetch(API_ENDPOINT, {
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(payload)
         });
-
-        const data = await res.json();
-        if (data.status === 'success') {
-          message.style.color = 'green';
-          message.textContent = '✅ Registrasi berhasil, silakan menunggu verifikasi.';
-          document.getElementById('register-form').reset();
-        } else {
-          message.style.color = 'red';
-          message.textContent = '❌ ' + (data.message || 'Registrasi gagal');
-        }
-      } catch (err) {
-        console.error(err);
-        message.style.color = 'red';
-        message.textContent = '❌ Gagal menghubungi server.';
-      }
+    .finally(() => {
+        loadingOverlay.classList.add('hidden');
+        alert('✅ Transaksi disimpan!');
+        document.getElementById('ledgerForm').reset();
+        previewNota.classList.add('hidden');
+        previewBukti.classList.add('hidden');
+        posInput.value = '';
+        buktiContainer.classList.add('hidden');
+      });
     });
   </script>
 </body>
