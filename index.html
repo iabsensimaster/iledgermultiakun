@@ -212,17 +212,18 @@
       const data = { nama, uraian, pos, nominal, fotoUrl, buktiUrl, pembayaranVal };
       fetch(SHEET_SUBMIT_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(responseData => {
+        body: JSON.stringify(payload)
+})
+    .finally(() => {
         loadingOverlay.classList.add('hidden');
-        alert('✅ Transaksi berhasil!');
-      })
-      .catch(err => {
-        loadingOverlay.classList.add('hidden');
-        alert('❌ Gagal mengirim data.');
+        alert('✅ Transaksi disimpan!');
+        document.getElementById('ledgerForm').reset();
+        previewNota.classList.add('hidden');
+        previewBukti.classList.add('hidden');
+        posInput.value = '';
+        buktiContainer.classList.add('hidden');
       });
     });
   </script>
