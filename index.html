@@ -39,16 +39,16 @@
       </div>
 
       <!-- Foto Nota -->
-<div>
-  <label class="block text-sm font-medium text-gray-600">Foto Nota</label>
-  <input type="file" accept="image/*" id="fotoNotaUpload" class="hidden" />
-  <input type="file" accept="image/*" capture="environment" id="fotoNotaCamera" class="hidden" />
-  <div class="mt-2 flex items-center space-x-2">
-    <label for="fotoNotaUpload" class="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Galeri</label>
-    <label for="fotoNotaCamera" class="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Kamera</label>
-    <img id="previewNota" class="w-55 h-55 object-cover rounded-lg border hidden" />
-  </div>
-</div>
+      <div>
+        <label class="block text-sm font-medium text-gray-600">Foto Nota</label>
+        <input type="file" accept="image/*" id="fotoNotaUpload" class="hidden" />
+        <input type="file" accept="image/*" capture="environment" id="fotoNotaCamera" class="hidden" />
+        <div class="mt-2 flex items-center space-x-2">
+          <label for="fotoNotaUpload" class="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Galeri</label>
+          <label for="fotoNotaCamera" class="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Kamera</label>
+          <img id="previewNota" class="w-55 h-55 object-cover rounded-lg border hidden" />
+        </div>
+      </div>
 
       <!-- Pembayaran -->
       <div>
@@ -60,14 +60,14 @@
       </div>
 
       <!-- Bukti Transfer -->
-<div id="buktiTransferContainer" class="hidden">
-  <label for="buktiTransfer" class="block text-sm font-medium text-gray-600">Bukti Transfer</label>
-  <div class="mt-2 flex items-center space-x-2">
-    <input type="file" accept="image/*" id="buktiTransfer" class="hidden" />
-    <label for="buktiTransfer" class="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Upload Bukti</label>
-    <img id="previewBukti" class="w-20 h-20 object-cover rounded-lg border hidden" />
-  </div>
-</div>
+      <div id="buktiTransferContainer" class="hidden">
+        <label for="buktiTransfer" class="block text-sm font-medium text-gray-600">Bukti Transfer</label>
+        <div class="mt-2 flex items-center space-x-2">
+          <input type="file" accept="image/*" id="buktiTransfer" class="hidden" />
+          <label for="buktiTransfer" class="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Upload Bukti</label>
+          <img id="previewBukti" class="w-20 h-20 object-cover rounded-lg border hidden" />
+        </div>
+      </div>
 
       <!-- Submit -->
       <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg shadow transition">Kirim Transaksi</button>
@@ -85,7 +85,6 @@
   </style>
 <script src="config.js"></script>
   <script>
-    
     const SHEET_API_NAMA = API_ENDPOINT + '?action=nama';
     const SHEET_API_POS = API_ENDPOINT + '?action=pos';
     const SHEET_SUBMIT_URL = API_ENDPOINT;
@@ -156,87 +155,87 @@
       previewBukti.classList.remove('hidden');
     });
 
-function uploadToDrive(file) {
-  return new Promise((resolve, reject) => {
-    const formData = new FormData();
-    formData.append('file', file);
+    // Fungsi untuk upload ke Google Drive
+    function uploadToDrive(file) {
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append('file', file);
 
-    fetch('API_ENDPOINT', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => resolve(data.fileUrl))  // URL file di Google Drive
-    .catch(err => reject(err));
-  });
-}
+        fetch('SHEET_SUBMIT_URL', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => resolve(data.fileUrl))  // URL file di Google Drive
+        .catch(err => reject(err));
+      });
+    }
 
-document.getElementById('ledgerForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  loadingOverlay.classList.remove('hidden');
+    document.getElementById('ledgerForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      loadingOverlay.classList.remove('hidden');
 
-  const nama = namaDropdown.value;
-  const uraian = uraianInput.value;
-  if (!uraianMap[uraian]) {
-    loadingOverlay.classList.add('hidden');
-    alert('❌ Uraian tidak valid.');
-    return;
-  }
+      const nama = namaDropdown.value;
+      const uraian = uraianInput.value;
+      if (!uraianMap[uraian]) {
+        loadingOverlay.classList.add('hidden');
+        alert('❌ Uraian tidak valid.');
+        return;
+      }
 
-  const pos = posInput.value;
-  const nominal = document.getElementById('nominal').value.replace(/\D/g, '');
-  const pembayaranVal = pembayaran.value;
+      const pos = posInput.value;
+      const nominal = document.getElementById('nominal').value.replace(/\D/g, '');
+      const pembayaranVal = pembayaran.value;
 
-  // Foto Nota
-  const fotoFile = fotoUpload.files[0] || fotoCamera.files[0];
-  if (!fotoFile) {
-    loadingOverlay.classList.add('hidden');
-    alert('❌ Foto nota wajib diunggah.');
-    return;
-  }
+      // Foto Nota
+      const fotoFile = fotoUpload.files[0] || fotoCamera.files[0];
+      if (!fotoFile) {
+        loadingOverlay.classList.add('hidden');
+        alert('❌ Foto nota wajib diunggah.');
+        return;
+      }
 
-  const fotoUrl = await uploadToDrive(fotoFile);
+      const fotoUrl = await uploadToDrive(fotoFile);
 
-  // Bukti Transfer (jika ada)
-  const buktiFile = pembayaranVal === 'Transfer' && buktiInput.files[0];
-  const buktiUrl = buktiFile ? await uploadToDrive(buktiFile) : '';
-  
-function formatDate(date) {
-  const day = String(date.getDate()).padStart(2, '0'); // Pastikan tanggal memiliki dua digit
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Pastikan bulan memiliki dua digit
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, '0'); // Pastikan jam memiliki dua digit
-  const minutes = String(date.getMinutes()).padStart(2, '0'); // Pastikan menit memiliki dua digit
-  const seconds = String(date.getSeconds()).padStart(2, '0'); // Pastikan detik memiliki dua digit
-  
-  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`; // Format: 30/04/2025 10:51:04
-}
+      // Bukti Transfer (jika ada)
+      const buktiFile = pembayaranVal === 'Transfer' && buktiInput.files[0];
+      const buktiUrl = buktiFile ? await uploadToDrive(buktiFile) : '';
+      
+      function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+      }
 
-const timestamp = formatDate(new Date()); // Format: 30/04/2025 10:51:04
-console.log(timestamp); // "30/04/2025 10:51:04"
+      const timestamp = formatDate(new Date());
 
-  const payload = {
-    action: 'add',
-    sheet: 'Transaksi',
-    values: [timestamp, nama, uraian, pos, nominal, fotoUrl, pembayaranVal, buktiUrl]
-  };
+      const payload = {
+        action: 'add',
+        sheet: 'Transaksi',
+        values: [timestamp, nama, uraian, pos, nominal, fotoUrl, pembayaranVal, buktiUrl]
+      };
 
-  fetch(SHEET_SUBMIT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .finally(() => {
-    loadingOverlay.classList.add('hidden');
-    alert('✅ Transaksi disimpan!');
-    document.getElementById('ledgerForm').reset();
-    previewNota.classList.add('hidden');
-    previewBukti.classList.add('hidden');
-    posInput.value = '';
-    buktiContainer.classList.add('hidden');
-  });
-});
+      fetch(SHEET_SUBMIT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .finally(() => {
+        loadingOverlay.classList.add('hidden');
+        alert('✅ Transaksi disimpan!');
+        document.getElementById('ledgerForm').reset();
+        previewNota.classList.add('hidden');
+        previewBukti.classList.add('hidden');
+        posInput.value = '';
+        buktiContainer.classList.add('hidden');
+      });
+    });
   </script>
 </body>
 </html>
