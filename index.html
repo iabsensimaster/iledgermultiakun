@@ -214,7 +214,7 @@
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(data)
 })
     .finally(() => {
         loadingOverlay.classList.add('hidden');
